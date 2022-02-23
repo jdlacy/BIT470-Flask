@@ -4,13 +4,13 @@ from resources.user import User, Users
 import sqlite3
 from os.path import exists
 from src.migrate_db import init_db
-import src.const
+from src.const import *
 from flask import g
 
 app = Flask(__name__)
 api = Api(app)
 
-if not exists(src.const.DB_NAME):
+if not exists(DB_NAME):
     init_db()
 
 class HelloWorld(Resource):

@@ -8,8 +8,8 @@ parser = reqparse.RequestParser()
 class User(Resource):
     def get(self, user_name):
         result = get_db().cursor().execute(f'SELECT * FROM users WHERE username="{user_name}"')
-        row = result.fetchone()
-        return dict(zip([c[0] for c in result.description], row))
+        return dict(zip([c[0] for c in result.description], result.fetchone()))
+    
     def post(self):
         parser.add_argument('username')
         parser.add_argument('password')
