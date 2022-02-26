@@ -42,7 +42,7 @@ class Signup(Resource):
             uid = hash(un)
 
             # get the secure password hash
-            pw_hash = generate_password_hash(str(data['password']) + SALT)
+            pw_hash = generate_password_hash(pw + SALT)
             dt = datetime.utcnow()
 
             # attempt to insert the new user into the database
@@ -74,4 +74,24 @@ class Signup(Resource):
 class Login(Resource):
     def post(self):
         # log in to an existing account and generate a new auth token for user
-        return 'auth token'
+        parser.add_argument('username')
+        parser.add_argument('password')
+        data = parser.parse_args()
+
+        un = str(data['username'])
+
+        query = 'SELECT * FROM users WHERE username=?'
+        result = get_db().cursor().execute(query, (un,))
+        user = dict(zip([c[0] for c in result.description], result.fetchone()))
+
+        pw = str(data['password'])
+        pw_hash = generate_password_hash(pw + SALT)
+        db_hash = user['password']
+
+        if db_hash == db_password:
+            token = encode_auth_token(un)
+            token_store[un] = token
+            return jsonify({"token": token.decode('utf-8')})
+        else:
+            get_db().close()
+            return 401
