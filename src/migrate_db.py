@@ -12,7 +12,7 @@ def init_db():
     try:
         con = sqlite3.connect(DB_DIRECTORY + DB_NAME)
         print('Connected to sqlite:' + DB_NAME)
-    except:
+    except Exception as e:
         print('Unable to create database file ' + DB_NAME)
         quit();
 
