@@ -44,6 +44,7 @@ def decode_auth_token(auth_token):
 
 def encode_auth_token(user_name):
     try:
+        jwt_header = {}
         jwt_payload = {
             'exp': datetime.utcnow() + timedelta(days=1),
             'iat': datetime.utcnow(),

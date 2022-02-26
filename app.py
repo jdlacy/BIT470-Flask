@@ -27,7 +27,7 @@ if not exists(DB_DIRECTORY + DB_NAME):
 
 # TODO: Replace with intended root get response
 class HelloWorld(Resource):
-    def get():
+    def get(self):
         return {'hello': 'world'}
 
 

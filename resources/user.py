@@ -22,11 +22,10 @@ class User(Resource):
             query = 'SELECT * FROM users WHERE username="?"'
             result = get_db().cursor().execute(query, user_name)
             row = result.fetchone()
+            return dict(zip([c[0] for c in result.description], row))
         except:
-            return []
+            return dict()
 
-        # return the user record as a dict
-        return dict(zip([c[0] for c in result.description], row))
 
     def post(self):
         # performs an update of an existing user
@@ -51,7 +50,7 @@ class User(Resource):
         try:
             query = 'SELECT * FROM users WHERE username="?"'
             result = get_db().cursor().execute(query, un)
-            row = result.fetchone()
+            return dict(zip([c[0] for c in result.description], result.fetchone()))
         except Exception as e:
             # return an error if user not found
             return dict(), 400
@@ -66,7 +65,7 @@ class User(Resource):
 
         # attempt to update the user into the database
         try:
-            values = (un, pw_hash)
+            values = (un, pw_hash, un)
             query = 'UPDATE users SET username = ?, password = ? WHERE [username = ?]'
             get_db().cursor().execute(query, values)
             get_db().commit()
