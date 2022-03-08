@@ -24,5 +24,3 @@ class User:
                 = dic['user_id'], dic['password'], dic['date_joined']
         else:
             raise "Dictionary in UserEntity: missing required fields "
-
-
