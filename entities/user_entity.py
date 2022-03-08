@@ -1,8 +1,3 @@
-from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
-
-
-
 class User:
     # initialize class members to none
     user_id = password = date_joined = None

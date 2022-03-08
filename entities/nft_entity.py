@@ -1,4 +1,3 @@
-
 class NFT:
 
     def __init__(self, nft_id=None, owner_id=None, nft_token=None, nft_url=None):
