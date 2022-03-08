@@ -1,11 +1,10 @@
 from src.tools import valid_username, valid_password, encode_auth_token, decode_auth_token
 from datetime import datetime
-from flask import jsonify, request
+from flask import jsonify
 from flask_restful import Resource, reqparse
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
-from src.tools import valid_username, valid_password, error_response
-from src.token_store import encode_auth_token, decode_auth_token
+from src.tools import valid_username, valid_password, encode_auth_token, decode_auth_token, error_response
 from src.db import get_db
 import src.const
 from src.tools import valid_username, valid_password, to_dict, to_dict_array
@@ -59,11 +58,10 @@ class SignupResource(Resource):
                 raise Exception("Could not add user to database")
 
             # CREATE AND RETURN NEW JWT TOKEN
-            # create a new token in the token store and return it
             token = encode_auth_token(user_id)
-            resp = make_response({"token": token.decode('utf-8')}, 200)
-            resp.headers["Authorization"] = "Bearer " + token.decode('utf-8')
-            return resp
+            # store the new token in the token store and return it
+            token_store[user_id] = token
+            return jsonify({"token": token.decode('utf-8')})
 
         # ERROR HANDLING
         except Exception as e:
@@ -90,12 +88,9 @@ class LoginResource(Resource):
             return error_response("NOT_FOUND", "The username and password combination provided was not found", 404)
 
         if check_password_hash(user['password'], password):
-            # encode and store a new token in the token store
             token = encode_auth_token(user_id)
-            resp = make_response({"token": token.decode('utf-8')}, 200)
-            resp.headers["Authorization"] = "Bearer " + token.decode('utf-8')
-            return resp
+            token_store[user_id] = token
+            return jsonify({"token": token.decode('utf-8')})
         else:
             get_db().close()
             return error_response("NOT_FOUND", "The username and password combination provided was not found", 404)
-
